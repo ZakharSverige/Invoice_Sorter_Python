@@ -46,3 +46,20 @@ courier_mapping = {
     for index, row in courier_df.iterrows()
 }
 # ...
+### 2. Главная Логика Сортировки и Перемещения (Фрагмент `shutil`)
+
+Скрипт итерирует по папкам с почтовыми индексами. На каждом шаге он извлекает адрес из имени файла, ищет его в словаре и перемещает файл в соответствующую папку.
+
+```python
+# --- Фрагмент кода сортировки и маршрутизации ---
+address_from_filename = parts[1].rsplit('.', 1)[0].replace('.', '')
+courier_name = courier_mapping.get(address_from_filename)
+
+if courier_name:
+    # Перемещение файла в папку курьера
+    target_courier_folder = os.path.join(root_data_folder, courier_name)
+    os.makedirs(target_courier_folder, exist_ok=True)
+    shutil.move(full_file_path, destination_path) 
+else:
+    # Перемещение файла в папку для нераспознанных
+    shutil.move(full_file_path, os.path.join(unmatched_path, filename))
